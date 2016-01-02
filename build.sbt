@@ -41,6 +41,7 @@ val baseSettings = Seq(
     "org.scala-lang" % "scala-reflect" % scalaVersion.value,
     compilerPlugin("org.scalamacros" % "paradise" % "2.0.1" cross CrossVersion.full)
   ) ++ testDependencies.map(_ % "test"),
+  target := file("/tmp/finch") / name.value,
   resolvers ++= Seq(
     Resolver.sonatypeRepo("releases"),
     Resolver.sonatypeRepo("snapshots")
