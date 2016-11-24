@@ -178,8 +178,8 @@ lazy val finch = project.in(file("."))
     "io.spray" %%  "spray-json" % sprayVersion
   ))
   .aggregate(
-    core, argonaut, jackson, json4s, circe, playjson, sprayjson, benchmarks, test, jsonTest, oauth2,
-    examples, sse
+    core, generic, argonaut, jackson, json4s, circe, playjson, sprayjson, benchmarks, test, jsonTest,
+    oauth2, examples, sse
   )
   .dependsOn(core, circe)
 
@@ -274,6 +274,11 @@ lazy val sse = project
   .settings(allSettings)
   .dependsOn(core)
 
+lazy val generic = project
+  .settings(moduleName := "finch-generic")
+  .settings(allSettings)
+  .dependsOn(core)
+
 lazy val docs = project
   .settings(moduleName := "finch-docs")
   .settings(docSettings)
@@ -346,7 +351,7 @@ lazy val benchmarks = project
       "-server"
     )
   )
-  .dependsOn(core, circe, jackson)
+  .dependsOn(core, generic, circe, jackson)
 
 val validateCommands = List(
   "clean",
