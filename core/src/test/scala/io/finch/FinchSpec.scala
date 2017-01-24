@@ -188,15 +188,12 @@ trait FinchSpec extends FlatSpec with Matchers with Checkers with AllInstances
       Arbitrary.arbitrary[Throwable].map(e =>
         Endpoint.liftFutureOutput(Future.exception[Output[A]](e))
       ),
-      /**
-       * Note that we don't provide instances of arbitrary endpoints wrapping
-       * `Input => Output[A]` since `Endpoint` isn't actually lawful in this
-       * respect.
-       */
-      Arbitrary.arbitrary[Input => A].map { f =>
-        new Endpoint[A] {
-          final def apply(input: Input): Endpoint.Result[A] =
-            EndpointResult.Matched(input, Rerunnable(Output.payload(f(input))))
+      Arbitrary.arbitrary[Status].flatMap { s =>
+        Arbitrary.arbitrary[Input => A].map { f =>
+          new Endpoint[A] {
+            final def apply(input: Input): Endpoint.Result[A] =
+              EndpointResult.Matched(input, Rerunnable(Output.payload(f(input), s)))
+          }
         }
       }
     )

@@ -1,8 +1,17 @@
 package io.finch
 
+import cats.kernel.Semigroup
 import com.twitter.finagle.http.Status
 
 trait Outputs {
+
+  implicit val statusSemigroup: Semigroup[Status] = new Semigroup[Status] {
+    def combine(a: Status, b: Status) = (a, b) match {
+      case (Status.Ok, b) => b
+      case (a, Status.Ok) => a
+      case (a, b) => a
+    }
+  }
 
   // See https://gist.github.com/vkostyukov/32c84c0c01789425c29a to understand how this list
   // is assembled.

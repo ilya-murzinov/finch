@@ -1,6 +1,7 @@
 package io.finch
 
 import cats.Eq
+import cats.kernel.Semigroup
 import com.twitter.finagle.http.{Cookie, Response, Status}
 import com.twitter.util.Future
 import io.finch.internal.ToResponse
@@ -50,7 +51,8 @@ sealed trait Output[+A] { self =>
       val ob = fn(v)
       ob.withMeta(ob.meta.copy(
         headers = ob.headers ++ p.headers,
-        cookies = ob.cookies ++ p.cookies
+        cookies = ob.cookies ++ p.cookies,
+        status = Semigroup[Status].combine(ob.status, p.status)
       ))
 
     case f @ Output.Failure(_, _) => f
